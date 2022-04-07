@@ -17,3 +17,36 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+
+//=========Admin Start========//
+
+
+
+//=========Admin End=========//
+
+//=========Flight-Manager Start========//
+
+
+
+//=========Flight-Manager End=========//
+
+//=========User Start========//
+
+
+
+//=========User End=========//
+
+//=========Manager Start========//
+
+
+
+//=========Manager End=========//
+
+
+
+
+
+
+
