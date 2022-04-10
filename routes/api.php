@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ManagerAPIController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,28 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //=========User End=========//
 
 //=========Manager Start========//
+Route::get('/manager/profile', [ManagerAPIController::class, 'profile']);
+Route::get('/manager/changepass', [ManagerAPIController::class, 'changepass']);
+Route::get('/manager/userlist', [ManagerAPIController::class, 'userlist']);
+Route::get('/manager/flightmanagerlist', [ManagerAPIController::class, 'flightmanagerlist']);
+Route::get('/manager/userdetails/{id}', [ManagerAPIController::class, 'userdetails']);
+Route::get('/manager/userticketlist/{id}', [ManagerAPIController::class, 'userticketlist']);
+Route::get('/manager/ticketdetails/{id}', [ManagerAPIController::class, 'ticketdetails']);
+Route::get('/manager/flightlist', [ManagerAPIController::class, 'flightlist']);
+Route::get('/manager/flightdetails/{id}', [ManagerAPIController::class, 'flightdetails']);
+Route::get('/manager/cancelticket/{u_id}/{t_id}', [ManagerAPIController::class, 'cancelticket']);
+Route::get('/manager/deleteflight/{id}/{fid}', [ManagerAPIController::class, 'deleteflight']);
+Route::get('/manager/transportlist', [ManagerAPIController::class, 'transportlist']);
+
+
+Route::post('/manager/editProfile', [ManagerAPIController::class, 'editProfile']);
+Route::post('/manager/changepass', [ManagerAPIController::class, 'changepassSubmit']);
+Route::post('/manager/edituserdetails', [ManagerAPIController::class, 'edituserdetails']);
+Route::post('/manager/userlistSearch', [ManagerAPIController::class, 'userlistSearch']);
+Route::post('/manager/editticket', [ManagerAPIController::class, 'editticket']);
+Route::post('/manager/bookticket', [ManagerAPIController::class, 'bookticket']);
+Route::post('/manager/flightSearch', [ManagerAPIController::class, 'flightSearch']);
+Route::post('/manager/flightManagerSearch', [ManagerAPIController::class, 'flightManagerSearch']);
 
 
 
