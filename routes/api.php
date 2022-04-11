@@ -73,22 +73,31 @@ Route::delete('/users/{id}', [UserApiController::class, 'deleteOne']);
 
 
 //=========Flight-Manager Start========//
-//Aircraft CRUD
+
 Route::get('/aircraft/all', [FlightManagerAPIController::class, 'getAllAircraft']);
 Route::get('/aircraft/{id}', [FlightManagerAPIController::class, 'getAircraft']);
 Route::post('/aircraft/create', [FlightManagerAPIController::class, 'createAircraftSubmit']);
 Route::post('/aircraft/edit', [FlightManagerAPIController::class, 'editAircraftSubmit']);
 Route::get('/aircraft/delete/{id}', [FlightManagerAPIController::class, 'deleteAircraft']);
-//Schedule CRUD
+
 Route::get('/schedule/all', [FlightManagerAPIController::class, 'getAllSchedule']);
 Route::get('/schedule/{id}', [FlightManagerAPIController::class, 'getSchedule']);
 Route::post('schedule/create', [FlightManagerAPIController::class, 'createScheduleSubmit']);
 Route::post('/schedule/edit', [FlightManagerAPIController::class, 'editScheduleSubmit']);
 Route::get('/schedule/delete/{id}', [FlightManagerAPIController::class, 'deleteSchedule']);
-//Profile RUD
+
 Route::get('/profile/{id}', [FlightManagerAPIController::class, 'getProfileInfo']);
 Route::post('/profile/edit', [FlightManagerAPIController::class, 'editProfile']);
 Route::get('/profile/delete/{id}', [FlightManagerAPIController::class, 'deleteAccount']);
+
+Route::get('/stopage/all', [FlightManagerAPIController::class, 'getAllStopage']);
+Route::get('/stopage/{id}', [FlightManagerAPIController::class, 'getStopage']);
+Route::post('/stopage/create', [FlightManagerAPIController::class, 'createStopageSubmit']);
+Route::post('/stopage/edit', [FlightManagerAPIController::class, 'editStopageSubmit']);
+Route::get('/stopage/delete/{id}', [FlightManagerAPIController::class, 'deleteStopage']);
+
+Route::post('/aircraft/search', [FlightManagerAPIController::class, 'flightSearch']);
+Route::get('/scheduledaircraft', [FlightManagerAPIController::class, 'scheduledAircrafts']);
 //=========Flight-Manager End=========//
 
 //=========User Start========//

@@ -314,7 +314,7 @@ class ManagerAPIController extends Controller
 
             return $flts;
         }
-        return reponse()->json(["msg" => "No flight Available"],200);
+        return response()->json(["msg" => "No flight Available"],200);
     }
 
     public function flightdetails(Request $req){
@@ -360,7 +360,7 @@ class ManagerAPIController extends Controller
 
             return $flt;
         }
-        return reponse()->json(["msg" => "No flight Available"],200);
+        return response()->json(["msg" => "No flight Available"],200);
     }
 
     public function deleteflight(Request $req){

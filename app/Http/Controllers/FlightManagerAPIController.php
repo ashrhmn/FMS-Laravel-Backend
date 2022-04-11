@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Transport;
 use App\Models\TransportSchedule;
 use App\Models\User;
+use App\Models\Stopage;
+
 
 class FlightManagerAPIController extends Controller
 {
@@ -161,7 +163,7 @@ class FlightManagerAPIController extends Controller
                 "Address"=>$u->address,
                 "Email"=>$u->email,
                 "Phone No"=>$u->phone,
-                "role"=>$u->role
+                "Role"=>$u->role
             );
             return response()->json($at,200);
         }
@@ -188,5 +190,128 @@ class FlightManagerAPIController extends Controller
         }
         return response()->json(["msg"=>"Not found"],404); 
     }
+
+    //Stopage CRUD
+
+    public function getAllStopage(){
+        $stopage = Stopage::all();
+        $stopages = array();
+        foreach ($stopage as $s){
+            $at = array
+            (
+                "Stopage Id"=> $s->id,
+                "Stopage Name"=>$s->name,
+                "City Id"=>$s->city_id,
+                "City Name"=>$s->city->name,
+                "Route Index"=>$s->route_index,
+                "Fare from root"=>$s->fare_from_root*10
+            );
+            array_push($stopages,$at);
+        }
+        return response()->json($stopages,200);
+    }
+    public function getStopage(Request $req){
+        $s = Stopage::where('id',$req->id)->first();
+        if($s){
+            $at = array
+            (
+                "Stopage Id"=> $s->id,
+                "Stopage Name"=>$s->name,
+                "City Id"=>$s->city_id,
+                "City Name"=>$s->city->name,
+                "Route Index"=>$s->route_index,
+                "Fare from root"=>$s->fare_from_root*10
+            );
+            return response()->json($at,200);
+        }
+        return response()->json(["msg"=>"notfound"],404);
+        
+    }
+    public function createStopageSubmit(Request $req){
+        $stopage = new Stopage();
+        $stopage->name = $req->name;
+        $stopage->city_id = $req->city_id;
+        $stopage->route_index = $req->route_index;
+        $stopage->fare_from_root = $req->fare_from_root;
+        $stopage->save();
+        return response()->json($stopage,200);  
+    }
+    public function editStopageSubmit(Request $req){
+        $stopage = Stopage::where('id',$req->id)->first();
+        if($stopage){
+            $stopage->name = $req->name;
+            $stopage->city_id = $req->city_id;
+            $stopage->route_index = $req->route_index;
+            $stopage->fare_from_root = $req->fare_from_root;
+            $stopage->save();
+            return response()->json(["msg"=>"stopage Updated","Updated Values"=>$stopage],200);
+        }
+        return response()->json(["msg"=>"stopage not found"],404); 
+    }
+    public function deleteStopage(Request $req){
+        $stopage = Stopage::where('id',$req->id)->first();
+        if($stopage){
+            $stopage->delete();
+            return response()->json(["msg"=>"stopage deleted"],200);
+        }
+        return response()->json(["msg"=>"stopage not found"],404); 
+    }
+
+
+    //Scheduled flights
+    public function scheduledAircrafts(){
+        $schedule = TransportSchedule::all();
+        $aircrafts = array();
+        foreach($schedule as $s){
+            $t = Transport::where('id',$s->transport_id)->first();
+            $at = array
+            (
+                "Aircraft Id"=> $t->id,
+                "Aircraft Name"=>$t->name,
+                "Maximum Seats"=>$t->maximum_seat,
+                "From"=>$t->transportschedules[0]->fromstopage->name,
+                "To"=>$t->transportschedules[0]->tostopage->name,
+                //"Schedule Details"=>$t->transportschedules
+            );
+            array_push($aircrafts,$at);
+
+        }
+        return $aircrafts;
+    }
+    //Flight Search 
+    public function flightSearch(Request $req){
+        
+        $flights = Transport::where('name','like','%'.$req->name.'%')
+                ->get();
+        if(count($flights) != 0){
+            $aircrafts = array();
+            foreach ($flights as $t){
+                $at = array
+                (
+                    "Aircraft Id"=> $t->id,
+                    "Aircraft Name"=>$t->name,
+                    "Maximum Seats"=>$t->maximum_seat,
+                    "Created by"=>$t->createdBy->name,
+                    "Creator Id"=>$t->created_by
+                );
+                array_push($aircrafts,$at);
+            }
+            return response()->json($aircrafts,200);
+        }
+
+        else{
+            return response()->json(["msg"=>"No Aircraft Found"],404);
+        }
+        
+        
+    }
+    
+
+
+
     
 }
+
+
+
+
