@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminAPIController;
 
 use App\Http\Controllers\FlightManagerAPIController;
 use App\Http\Controllers\UserApiController;
+use App\Http\Controllers\UserDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,26 +31,26 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 //user Crud
-Route::get('/admin/userlist',[AdminAPIController::class,'userlist']);
-Route::post('/admin/add',[AdminAPIController::class,'adduser']);
-Route::post('/admin/edit/{id}',[AdminAPIController::class,'edituser']);
-Route::delete('/admin/delete/{id}',[AdminAPIController::class,'deleteuser']);
-Route::post('/admin/search',[AdminAPIController::class,'searchuser']);
+Route::get('/admin/userlist', [AdminAPIController::class, 'userlist']);
+Route::post('/admin/add', [AdminAPIController::class, 'adduser']);
+Route::post('/admin/edit/{id}', [AdminAPIController::class, 'edituser']);
+Route::delete('/admin/delete/{id}', [AdminAPIController::class, 'deleteuser']);
+Route::post('/admin/search', [AdminAPIController::class, 'searchuser']);
 //admin profile
 Route::get('/admin/profile', [AdminAPIController::class, 'adminprofile']);
 Route::post('/admin/editProfile', [AdminAPIController::class, 'admineditProfile']);
 //Manager Crud
-Route::get('/admin/managerlist',[AdminAPIController::class,'managerlist']);
-Route::post('/admin/addmanager',[AdminAPIController::class,'addmanager']);
-Route::post('/admin/editmanager/{id}',[AdminAPIController::class,'editmanager']);
-Route::delete('/admin/deletemanager/{id}',[AdminAPIController::class,'deletemanager']);
-Route::post('/admin/searchmanager',[AdminAPIController::class,'searchmanager']);
+Route::get('/admin/managerlist', [AdminAPIController::class, 'managerlist']);
+Route::post('/admin/addmanager', [AdminAPIController::class, 'addmanager']);
+Route::post('/admin/editmanager/{id}', [AdminAPIController::class, 'editmanager']);
+Route::delete('/admin/deletemanager/{id}', [AdminAPIController::class, 'deletemanager']);
+Route::post('/admin/searchmanager', [AdminAPIController::class, 'searchmanager']);
 //flightmanager Crud
-Route::get('/admin/flightmanagerlist',[AdminAPIController::class,'flightmanagerlist']);
-Route::post('/admin/addflightmanager',[AdminAPIController::class,'addflightmanager']);
-Route::post('/admin/editflightmanager/{id}',[AdminAPIController::class,'editflightmanager']);
-Route::delete('/admin/deleteflightmanager/{id}',[AdminAPIController::class,'deleteflightmanager']);
-Route::post('/admin/searchflightmanager',[AdminAPIController::class,'searchflightmanager']);
+Route::get('/admin/flightmanagerlist', [AdminAPIController::class, 'flightmanagerlist']);
+Route::post('/admin/addflightmanager', [AdminAPIController::class, 'addflightmanager']);
+Route::post('/admin/editflightmanager/{id}', [AdminAPIController::class, 'editflightmanager']);
+Route::delete('/admin/deleteflightmanager/{id}', [AdminAPIController::class, 'deleteflightmanager']);
+Route::post('/admin/searchflightmanager', [AdminAPIController::class, 'searchflightmanager']);
 
 
 
@@ -66,6 +67,8 @@ Route::get('/users/{id}', [UserApiController::class, 'getOne']);
 Route::post('/users/', [UserApiController::class, 'addOne']);
 Route::put('/users/', [UserApiController::class, 'updateOne']);
 Route::delete('/users/{id}', [UserApiController::class, 'deleteOne']);
+
+Route::get('/userdb/flights', [UserDashboardController::class, 'getFlightList']);
 
 
 //=========User End=========//
