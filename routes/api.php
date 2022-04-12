@@ -66,6 +66,7 @@ Route::post('/admin/searchflightmanager', [AdminAPIController::class, 'searchfli
 Route::post('/auth/sign-in', [AuthController::class, 'signIn']);
 Route::post('/auth/sign-up', [AuthController::class, 'signUp']);
 Route::get('/auth/current-user', [AuthController::class, 'currentUser']);
+Route::get('/auth/sign-up/cities', [AuthController::class, 'getCities']);
 
 //=========Auth End========//
 

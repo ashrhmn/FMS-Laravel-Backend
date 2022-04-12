@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\City;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Token;
@@ -31,16 +32,15 @@ class AuthController extends Controller
             return response()->json(["data" => null, "error" => "Username already exists"], 401);
         }
         $user = new User();
-
         $user->username = $req->username;
         $user->name = $req->name;
         $user->email = $req->email;
         $user->address = $req->address;
         $user->phone = $req->phone;
-        $user->date_of_birth = $req->dob;
+        $user->date_of_birth = $req->dateOfBirth;
         $user->password = md5($req->password);
+        $user->city_id = $req->cityId;
         $user->save();
-
         return response()->json(["data" => $user, "error" => null], 201);
     }
 
@@ -51,5 +51,10 @@ class AuthController extends Controller
         $userToken = Token::where('value', $token)->first();
         if (!$userToken) return response()->json(["data" => null, "error" => "Invalid Token"], 404);
         return response()->json(["data" => $userToken->user, "error" => null], 200);
+    }
+
+    public function getCities()
+    {
+        return response()->json(["data" => City::all(), "error" => null], 200);
     }
 }
