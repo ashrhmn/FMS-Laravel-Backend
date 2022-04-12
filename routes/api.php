@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ManagerAPIController;
 
 use App\Http\Controllers\AdminAPIController;
-
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FlightManagerAPIController;
 use App\Http\Controllers\UserApiController;
 use App\Http\Controllers\UserDashboardController;
@@ -60,6 +60,14 @@ Route::post('/admin/searchflightmanager', [AdminAPIController::class, 'searchfli
 
 
 //=========User Start========//
+
+//=========Auth Start=========//
+
+Route::post('/auth/sign-in', [AuthController::class, 'signIn']);
+Route::post('/auth/sign-up', [AuthController::class, 'signUp']);
+Route::get('/auth/current-user', [AuthController::class, 'currentUser']);
+
+//=========Auth End========//
 
 
 Route::get('/users/', [UserApiController::class, 'getAll']);
