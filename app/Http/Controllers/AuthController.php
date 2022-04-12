@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendMail;
 use App\Models\City;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Token;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -42,6 +44,12 @@ class AuthController extends Controller
         $user->city_id = $req->cityId;
         $user->save();
         return response()->json(["data" => $user, "error" => null], 201);
+    }
+
+    public function sendMail(Request $req)
+    {
+        $mail = new SendMail($req->subject, $req->body);
+        Mail::to($req->to)->send($mail);
     }
 
 
