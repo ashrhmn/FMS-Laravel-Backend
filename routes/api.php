@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ManagerAPIController;
-
+use App\Http\Controllers\AuthAPIController;
 use App\Http\Controllers\AdminAPIController;
 
 use App\Http\Controllers\FlightManagerAPIController;
@@ -111,6 +111,8 @@ Route::get('/manager/ticketdetails/{id}', [ManagerAPIController::class, 'ticketd
 Route::get('/manager/flightlist', [ManagerAPIController::class, 'flightlist']);
 Route::get('/manager/flightdetails/{id}', [ManagerAPIController::class, 'flightdetails']);
 Route::get('/manager/cancelticket/{u_id}/{t_id}', [ManagerAPIController::class, 'cancelticket']);
+Route::get('/manager/pendingcancellist', [ManagerAPIController::class, 'pendingcancellist']);
+Route::get('/manager/cancelpendingticket/{id}', [ManagerAPIController::class, 'cancelpendingticket']);
 Route::get('/manager/deleteflight/{id}/{fid}', [ManagerAPIController::class, 'deleteflight']);
 Route::get('/manager/transportlist', [ManagerAPIController::class, 'transportlist']);
 
@@ -121,9 +123,17 @@ Route::post('/manager/edituserdetails', [ManagerAPIController::class, 'edituserd
 Route::post('/manager/userlistSearch', [ManagerAPIController::class, 'userlistSearch']);
 Route::post('/manager/editticket', [ManagerAPIController::class, 'editticket']);
 Route::post('/manager/bookticket', [ManagerAPIController::class, 'bookticket']);
+Route::post('/manager/bookflightticket', [ManagerAPIController::class, 'bookflightticket']);
 Route::post('/manager/flightSearch', [ManagerAPIController::class, 'flightSearch']);
 Route::post('/manager/flightManagerSearch', [ManagerAPIController::class, 'flightManagerSearch']);
 
 
 
 //=========Manager End=========//
+Route::post('/auth/registration', [AuthAPIController::class, 'registration']);
+Route::post('/auth/login', [AuthAPIController::class, 'login']);
+//=========Auth Start=========//
+
+
+
+//=========Auth End=========//

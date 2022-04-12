@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Validator;
 use App\Models\User; 
 use App\Models\PurchasedTicket;
 use App\Models\Stopage;
@@ -25,7 +26,19 @@ class ManagerAPIController extends Controller
     }
 
     public function editProfile(Request $req){
-        $user = User::where('id', $req->id)->first();
+        $rules = array(
+            'name' => "required",
+            'email' => "required|email",
+            'phone' => "required|regex:/(01)[0-9]{9}/",
+            'date_of_birth' => "required",
+            'address' => "required"
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+
+        $user = User::where('id', $this->user_id)->first();
         if($user){
             $user->name = $req->name;
             $user->email = $req->email;
@@ -51,13 +64,25 @@ class ManagerAPIController extends Controller
     }
 
     public function changepassSubmit(Request $req){
+
+        $rules = array(
+            'oldpass' => 'min:4',
+            'password' => 'min:4',
+            'conpass' => 'min:4|same:password'
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+
+
         if($req->password == $req->conpass){
-            $users = User::where('id', $req->id)
+            $users = User::where('id', $this->user_id)
             ->where('password', md5($req->oldpass))
             ->first();
 
             if ($users) {
-                $user = User::where('id', $req->id)
+                $user = User::where('id', $this->user_id)
                     ->update(['password' => md5($req->password)]);
 
                 return response()->json(["msg"=>"Password Changed Successfully"],200);
@@ -108,6 +133,21 @@ class ManagerAPIController extends Controller
     }
 
     public function edituserdetails(Request $req){
+
+        $rules = array(
+            'id' => 'required',
+            'name' => 'required',
+            'email' => "required|email",
+            'phone' => "required|regex:/(01)[0-9]{9}/",
+            'date_of_birth' => "required",
+            'address' => "required",
+            'role' => "required"
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+
         $user = User::where('id', $req->id)
         ->select('id','name','username','date_of_birth','email','phone','address','role')->first();
         if($user){
@@ -385,6 +425,17 @@ class ManagerAPIController extends Controller
     }
 
     public function editticket(Request $req){
+
+        $rules = array(
+            'id' => 'required',
+            'seat_class' => 'required',
+            'age_class' => "required"
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+
         $ticket = PurchasedTicket::where('id',$req->id)->first();
         $seats = SeatInfo::where('ticket_id',$ticket->id)->get();
         
@@ -436,6 +487,56 @@ class ManagerAPIController extends Controller
 
     }
 
+    public function pendingcancellist(){
+        $seatss = SeatInfo::where('status', 'Cancel-Pending')->get();
+        if(count($seatss) !=0){
+            $seats = [];
+            foreach($seatss as $sts){
+                
+                $ticket= PurchasedTicket::where('id', $sts->ticket_id)->first();
+                //return $ticket->id;
+                //$sts = SeatInfo::where('ticket_id', $ticket->id)->get();
+                foreach($ticket->seatinfos as $st){
+                    
+                    $seat = [
+                        "ticket_id" => $ticket->id,
+                        "fromStopage" => $ticket->fromstopage->name,
+                        "from_stopage_city"=> $ticket->fromstopage->city->name,
+                        "from_stopage_country"=> $ticket->fromstopage->city->country,
+                        "toStopage" => $ticket->tostopage->name,
+                        "to_stopage_city"=> $ticket->tostopage->city->name,
+                        "to_stopage_country"=> $ticket->tostopage->city->country,
+                        "purchased by" => $ticket->user->name,
+                        "seat_id" => $st->id,
+                        "flight_name" => $st->transport->name,
+                        "flight_time" => $st->start_time,
+                        "seat_class" => $st->seat_class,
+                        "age_class" => $st->age_class,
+                        "Ticket_Status" => $st->status
+                    ];
+                    
+                    array_push($seats, $seat);
+
+                }
+                
+
+            }
+            return $seats;
+        }
+        return response()->json(["msg" => "No Pending Cancel Tickets"]);
+    }
+
+    public function cancelpendingticket(Request $req){
+        $ticket = PurchasedTicket::where('id','=',$req->id)->first();
+        if($ticket){
+            $deleteticket = PurchasedTicket::where('id', '=', $ticket->id)->delete();
+
+            return response()->json(["msh"=> "Ticket cancelled Successfully"],200);
+        }
+        return response()->json(["msh"=> "Ticket not found"],200);
+
+    }
+
     public function cancelticket(Request $req){
         $ticketcount = PurchasedTicket::where('purchased_by','=',$req->u_id)->count();
         if ($ticketcount <= 1) {
@@ -449,8 +550,66 @@ class ManagerAPIController extends Controller
         }
     }
 
+
+    public function bookflightticket(Request $req){
+
+        $rules = array(
+            'user_id' => 'required',
+            'flight_id' => 'required',
+            'age_class' => 'required',
+            'seat_class'=> 'required'
+
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+
+        $user = User::where('id',$req->user_id)->first();
+        if($user){
+            $flight = TransportSchedule::where('id',$req->flight_id)->first();
+            if($flight){
+                $ticket = new PurchasedTicket();
+                $ticket->from_stopage_id = $flight->from_stopage_id;
+                $ticket->to_stopage_id = $flight->to_stopage_id;
+                $ticket->purchased_by = $req->user_id;
+                $ticket->save();
+
+                $seat = new SeatInfo();
+                $seat->start_time = $flight->start_time;
+                $seat->ticket_id = $ticket->id;
+                $seat->transport_id = $flight->transport_id;
+                $seat->age_class = $req->age_class;
+                $seat->seat_class = $req->seat_class;
+                $seat->status = "Booked";
+                $seat->save();
+
+                return response()->json(["msg" => "Ticket Booked Successfully"],200);
+            }
+            return response()->json(["msg" => "Flight Not Found"],200);
+        }
+        return response()->json(["msg" => "User Not Found"],200);
+
+    }
+
+
     public function bookticket(Request $req){
-        
+
+        $rules = array(
+            'user_id' => 'required',
+            'transport_id' => 'required',
+            'from_stopage' => 'required',
+            'to_stopage' => 'required',
+            'flight_time' => 'required',
+            'age_class' => 'required',
+            'seat_class'=> 'required'
+
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return $validator->errors();
+        }
+
         $fromstopage = Stopage::where('name','=', $req->from_stopage)->select('id')->first();
         $tostopage = Stopage::where('name','=', $req->to_stopage)->select('id')->first();
 
