@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\SendMail;
 use App\Models\City;
+use App\Models\EmailVerifyToken;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Token;
@@ -31,8 +32,9 @@ class AuthController extends Controller
     {
         $existingUser = User::where('username', $req->username)->first();
         if ($existingUser) {
-            return response()->json(["data" => null, "error" => "Username already exists"], 401);
+            return response()->json(["data" => null, "error" => "Username already exists"], 200);
         }
+
         $user = new User();
         $user->username = $req->username;
         $user->name = $req->name;
@@ -42,14 +44,28 @@ class AuthController extends Controller
         $user->date_of_birth = $req->dateOfBirth;
         $user->password = md5($req->password);
         $user->city_id = $req->cityId;
+        $user->status = "unverified";
         $user->save();
+
+        $tokenGen = bin2hex(random_bytes(37));
+
+        $emailToken = new EmailVerifyToken();
+        $emailToken->value = $tokenGen;
+        $emailToken->user_id = $user->id;
+        $emailToken->save();
+
+        // $mail = new SendMail($req->name, $tokenGen);
+        // Mail::to($req->to)->send($mail);
+
+
         return response()->json(["data" => $user, "error" => null], 201);
     }
 
     public function sendMail(Request $req)
     {
         $mail = new SendMail($req->subject, $req->body);
-        Mail::to($req->to)->send($mail);
+        $result = Mail::to($req->to)->send($mail);
+        return $result;
     }
 
 

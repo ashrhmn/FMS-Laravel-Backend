@@ -79,7 +79,7 @@ Route::post('/users/', [UserApiController::class, 'addOne']);
 Route::put('/users/', [UserApiController::class, 'updateOne']);
 Route::delete('/users/{id}', [UserApiController::class, 'deleteOne']);
 
-Route::get('/userdb/flights', [UserDashboardController::class, 'getFlightList']);
+Route::get('/user-db/flights', [UserDashboardController::class, 'getFlightList']);
 
 
 //=========User End=========//
