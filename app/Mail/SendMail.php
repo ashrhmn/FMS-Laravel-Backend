@@ -20,6 +20,7 @@ class SendMail extends Mailable
     {
         $this->token = $token;
         $this->name = $name;
+        $this->subject = "Verify your account";
     }
 
     /**
