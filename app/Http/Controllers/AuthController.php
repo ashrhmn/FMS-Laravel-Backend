@@ -84,9 +84,11 @@ class AuthController extends Controller
     {
         $token = $req->header('token');
         $userToken = Token::where('value', $token)->first();
-        if (!$userToken) return response()->json(["data" => null, "error" => "Invalid Token"], 404);
+        if (!$userToken) return "Invalid token";
 
         $user = $userToken->user;
+
+        EmailVerifyToken::where('user_id', $user->id)->delete();
 
         $tokenGen = bin2hex(random_bytes(37));
 
@@ -96,7 +98,7 @@ class AuthController extends Controller
         $emailToken->save();
 
         $mail = new SendMail($req->name, $tokenGen);
-        Mail::to($req->email)->send($mail);
+        Mail::to($user->email)->send($mail);
         return "Sent successfully";
     }
 
