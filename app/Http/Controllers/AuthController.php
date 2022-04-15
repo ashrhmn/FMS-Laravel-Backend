@@ -21,6 +21,7 @@ class AuthController extends Controller
             $token->value = $tokenGen;
             $token->user_id = $user->id;
             $token->save();
+            $token->token = $token->value;
             return response()->json(["data" => $token, "error" => null], 201);
         } else {
             return response()->json(["data" => null, "error" => "Username or password is incorrect"], 401);
@@ -44,7 +45,7 @@ class AuthController extends Controller
         $user->date_of_birth = $req->dateOfBirth;
         $user->password = md5($req->password);
         $user->city_id = $req->cityId;
-        $user->status = "unverified";
+        $user->verified = 0;
         $user->save();
 
         $tokenGen = bin2hex(random_bytes(37));
@@ -54,11 +55,22 @@ class AuthController extends Controller
         $emailToken->user_id = $user->id;
         $emailToken->save();
 
-        // $mail = new SendMail($req->name, $tokenGen);
-        // Mail::to($req->to)->send($mail);
+        $mail = new SendMail($req->name, $tokenGen);
+        Mail::to($req->email)->send($mail);
 
 
         return response()->json(["data" => $user, "error" => null], 201);
+    }
+
+    public function verifyEmail($token)
+    {
+        $tokenModel = EmailVerifyToken::where('value', $token)->first();
+        if (!$tokenModel) return "Token invalid";
+        $user = User::where('id', $tokenModel->user->id)->first();
+        $user->verified = 1;
+        $user->save();
+        $tokenModel->delete();
+        return "Email Verified";
     }
 
     public function sendMail(Request $req)
@@ -66,6 +78,26 @@ class AuthController extends Controller
         $mail = new SendMail($req->subject, $req->body);
         $result = Mail::to($req->to)->send($mail);
         return $result;
+    }
+
+    public function resendVerificationMail(Request $req)
+    {
+        $token = $req->header('token');
+        $userToken = Token::where('value', $token)->first();
+        if (!$userToken) return response()->json(["data" => null, "error" => "Invalid Token"], 404);
+
+        $user = $userToken->user;
+
+        $tokenGen = bin2hex(random_bytes(37));
+
+        $emailToken = new EmailVerifyToken();
+        $emailToken->value = $tokenGen;
+        $emailToken->user_id = $user->id;
+        $emailToken->save();
+
+        $mail = new SendMail($req->name, $tokenGen);
+        Mail::to($req->email)->send($mail);
+        return "Sent successfully";
     }
 
 

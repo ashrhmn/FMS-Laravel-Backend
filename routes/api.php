@@ -68,6 +68,9 @@ Route::post('/auth/sign-up', [AuthController::class, 'signUp']);
 Route::get('/auth/current-user', [AuthController::class, 'currentUser']);
 Route::get('/auth/sign-up/cities', [AuthController::class, 'getCities']);
 
+Route::get('/auth/verify-email/{token}', [AuthController::class, 'verifyEmail']);
+Route::get('/auth/resend-verification-mail', [AuthController::class, 'resendVerificationMail']);
+
 Route::post('/auth/send-mail', [AuthController::class, 'sendMail']);
 
 //=========Auth End========//
