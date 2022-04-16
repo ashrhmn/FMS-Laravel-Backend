@@ -17,9 +17,10 @@ class UserVerification extends Mailable
      * @return void
      */
     
-    public function __construct()
+    public function __construct($sub, $body)
     {
-        //
+        $this->subject = $sub;
+        $this->body = $body;
     }
 
     /**

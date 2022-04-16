@@ -266,15 +266,15 @@ class FlightManagerAPIController extends Controller
 
 
     //Scheduled flights
-    public function scheduledAircrafts()
-    {
-        $schedules = TransportSchedule::all();
-        foreach ($schedules as $schedule) {
-            $schedule->transport;
-            $schedule->fromstopage->city;
-            $schedule->tostopage->city;
-        }
-        return $schedules;
+    // public function scheduledAircrafts()
+    // {
+    //     $schedules = TransportSchedule::all();
+    //     foreach ($schedules as $schedule) {
+    //         $schedule->transport;
+    //         $schedule->fromstopage->city;
+    //         $schedule->tostopage->city;
+    //     }
+    //     return $schedules;
         // $aircrafts = array();
         // foreach ($schedule as $s) {
         //     $t = Transport::where('id', $s->transport_id)->first();
@@ -289,7 +289,7 @@ class FlightManagerAPIController extends Controller
         //     array_push($aircrafts, $at);
         // }
         // return $aircrafts;
-    }
+    //}
     //Flight Search 
     public function flightSearch(Request $req)
     {
