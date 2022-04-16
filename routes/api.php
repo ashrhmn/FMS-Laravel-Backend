@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FlightManagerAPIController;
 use App\Http\Controllers\UserApiController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\AuthFmController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,30 +89,35 @@ Route::get('/user-db/flights', [UserDashboardController::class, 'getFlightList']
 
 //=========Flight-Manager Start========//
 
-Route::get('/aircraft/all', [FlightManagerAPIController::class, 'getAllAircraft']);
-Route::get('/aircraft/{id}', [FlightManagerAPIController::class, 'getAircraft']);
-Route::post('/aircraft/create', [FlightManagerAPIController::class, 'createAircraftSubmit']);
-Route::post('/aircraft/edit', [FlightManagerAPIController::class, 'editAircraftSubmit']);
-Route::get('/aircraft/delete/{id}', [FlightManagerAPIController::class, 'deleteAircraft']);
+Route::get('/fm/aircraft/all', [FlightManagerAPIController::class, 'getAllAircraft']);
+Route::get('/fm/aircraft/{id}', [FlightManagerAPIController::class, 'getAircraft']);
+Route::post('/fm/aircraft/create', [FlightManagerAPIController::class, 'createAircraftSubmit']);
+Route::post('/fm/aircraft/edit', [FlightManagerAPIController::class, 'editAircraftSubmit']);
+Route::get('/fm/aircraft/delete/{id}', [FlightManagerAPIController::class, 'deleteAircraft']);
 
-Route::get('/schedule/all', [FlightManagerAPIController::class, 'getAllSchedule']);
-Route::get('/schedule/{id}', [FlightManagerAPIController::class, 'getSchedule']);
-Route::post('schedule/create', [FlightManagerAPIController::class, 'createScheduleSubmit']);
-Route::post('/schedule/edit', [FlightManagerAPIController::class, 'editScheduleSubmit']);
-Route::get('/schedule/delete/{id}', [FlightManagerAPIController::class, 'deleteSchedule']);
+Route::get('/fm/schedule/all', [FlightManagerAPIController::class, 'getAllSchedule']);
+Route::get('/fm/schedule/{id}', [FlightManagerAPIController::class, 'getSchedule']);
+Route::post('/fmschedule/create', [FlightManagerAPIController::class, 'createScheduleSubmit']);
+Route::post('/fm/schedule/edit', [FlightManagerAPIController::class, 'editScheduleSubmit']);
+Route::get('/fm/schedule/delete/{id}', [FlightManagerAPIController::class, 'deleteSchedule']);
 
-Route::get('/profile/{id}', [FlightManagerAPIController::class, 'getProfileInfo']);
-Route::post('/profile/edit', [FlightManagerAPIController::class, 'editProfile']);
-Route::get('/profile/delete/{id}', [FlightManagerAPIController::class, 'deleteAccount']);
+Route::get('/fm/profile/{id}', [FlightManagerAPIController::class, 'getProfileInfo']);
+Route::post('/fm/profile/edit', [FlightManagerAPIController::class, 'editProfile']);
+Route::get('/fm/profile/delete/{id}', [FlightManagerAPIController::class, 'deleteAccount']);
 
-Route::get('/stopage/all', [FlightManagerAPIController::class, 'getAllStopage']);
-Route::get('/stopage/{id}', [FlightManagerAPIController::class, 'getStopage']);
-Route::post('/stopage/create', [FlightManagerAPIController::class, 'createStopageSubmit']);
-Route::post('/stopage/edit', [FlightManagerAPIController::class, 'editStopageSubmit']);
-Route::get('/stopage/delete/{id}', [FlightManagerAPIController::class, 'deleteStopage']);
+Route::get('/fm/stopage/all', [FlightManagerAPIController::class, 'getAllStopage']);
+Route::get('/fm/stopage/{id}', [FlightManagerAPIController::class, 'getStopage']);
+Route::post('/fm/stopage/create', [FlightManagerAPIController::class, 'createStopageSubmit']);
+Route::post('/fm/stopage/edit', [FlightManagerAPIController::class, 'editStopageSubmit']);
+Route::get('/fm/stopage/delete/{id}', [FlightManagerAPIController::class, 'deleteStopage']);
 
-Route::post('/aircraft/search', [FlightManagerAPIController::class, 'flightSearch']);
-Route::get('/scheduledaircraft', [FlightManagerAPIController::class, 'scheduledAircrafts']);
+Route::post('/fm/aircraft/search', [FlightManagerAPIController::class, 'flightSearch']);
+Route::get('/fm/scheduledaircraft', [FlightManagerAPIController::class, 'scheduledAircrafts']);
+Route::get('/fm/bookedseats/{id}', [FlightManagerAPIController::class, 'bookedSeatsAircraft']);
+
+Route::post('/authfm/registration', [AuthFmController::class, 'registration']);
+Route::post('/authfm/login', [AuthFmController::class, 'login']);
+
 //=========Flight-Manager End=========//
 
 //=========User Start========//
