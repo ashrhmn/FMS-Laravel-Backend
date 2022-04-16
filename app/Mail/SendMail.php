@@ -16,10 +16,11 @@ class SendMail extends Mailable
      *
      * @return void
      */
-    public function __construct($sub, $body)
+    public function __construct($name, $token)
     {
-        $this->subject = $sub;
-        $this->body = $body;
+        $this->token = $token;
+        $this->name = $name;
+        $this->subject = "Verify your account";
     }
 
     /**
@@ -29,6 +30,6 @@ class SendMail extends Mailable
      */
     public function build()
     {
-        return $this->view('mail')->with('body', $this->body)->with('subject', $this->subject);
+        return $this->view('mail')->with('token', $this->token)->with('name', $this->name);
     }
 }

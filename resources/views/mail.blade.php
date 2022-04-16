@@ -1,5 +1,5 @@
-<h1>{{ $subject }}</h1>
+<h1>Welcome {{ $name }}</h1>
 
-<p>{{ $body }}</p>
+<p> Click the link below to verify your email : </p>
 
-Ashik Rahman
+<a href="http://127.0.0.1:8000/api/auth/verify-email/{{ $token }}">Verify Email</a>
