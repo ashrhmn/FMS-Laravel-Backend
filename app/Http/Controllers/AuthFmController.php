@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Validator;
 use App\Models\User; 
 use App\Models\EmailVerifyToken;
-use App\Mail\SendMail;
+use App\Mail\TestMail;
 use Illuminate\Support\Facades\Mail;
 
 class AuthFmController extends Controller
@@ -46,12 +46,21 @@ class AuthFmController extends Controller
         $emailToken->user_id = $user->id;
         $emailToken->save();
 
-        $mail = new SendMail($req->name, $tokenGen);
+        $mail = new TestMail($req->name, $tokenGen);
         Mail::to($req->email)->send($mail);
-        return response()->json(["msg"=> "Registration Successfull. Please "]);
+        return response()->json(["msg"=> "Registration Successfull. A verification Link has been sent, Please Veify your Email"]);
         
-
-        
+ 
+    }
+    public function verifyEmail($token)
+    {
+        $tokenModel = EmailVerifyToken::where('value', $token)->first();
+        if (!$tokenModel) return "Token invalid";
+        $user = User::where('id', $tokenModel->user->id)->first();
+        $user->verified = 1;
+        $user->save();
+        $tokenModel->delete();
+        return "Email Verified";
     }
 
 
