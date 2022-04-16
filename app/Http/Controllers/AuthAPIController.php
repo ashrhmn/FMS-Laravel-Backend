@@ -7,6 +7,7 @@ use Validator;
 use App\Models\User; 
 use App\Mail\UserVerification;
 use Illuminate\Support\Facades\Mail;
+use App\Models\EmailVerifyToken;
 
 class AuthAPIController extends Controller
 {
@@ -15,6 +16,7 @@ class AuthAPIController extends Controller
 
 
     public function registration(Request $req){
+        
         $rules = array(
             'username' => 'required|unique:users,username|min:3',
             'name' => 'required|min:5',
@@ -42,12 +44,36 @@ class AuthAPIController extends Controller
         $user->date_of_birth = $req->dob;
         $user->password = md5($req->password);
         $user->role = "User";
-        if($user->save()){
-            return response()->json(["msg"=> "Registration Successfull. Please Login your profile"]);
-        }
+        $user->save();
 
-        
+        $tokenGen = bin2hex(random_bytes(37));
+        $emailToken = new EmailVerifyToken();
+        $emailToken->value = $tokenGen;
+        $emailToken->user_id = $user->id;
+        $emailToken->save();
+
+        $mail = new UserVerification("Email Verification",$req->name, $tokenGen);
+        Mail::to($req->email)->send($mail);
+
+        return response()->json(["msg"=> "Registration Successfull. Check Your Email For Verification"]);
+
     }
+
+
+    public function emailVerification($token)
+    {
+        $tokenModel = EmailVerifyToken::where('value', $token)->first();
+        if (!$tokenModel) return "Link Expired";
+        $user = User::where('id', $tokenModel->user->id)->first();
+        $user->verified = 1;
+        $user->save();
+        $tokenModel->delete();
+        return "Email Verified";
+    }
+
+
+
+
 
     public function login(Request $req){
         $rules = array(

@@ -157,13 +157,13 @@ Route::post('/manager/bookflightticket', [ManagerAPIController::class, 'bookflig
 Route::post('/manager/flightSearch', [ManagerAPIController::class, 'flightSearch']);
 Route::post('/manager/flightManagerSearch', [ManagerAPIController::class, 'flightManagerSearch']);
 
-
-
-//=========Manager End=========//
+//=========Auth Start=========//
 Route::post('/auth/registration', [AuthAPIController::class, 'registration']);
 Route::post('/auth/login', [AuthAPIController::class, 'login']);
-//=========Auth Start=========//
-
-
+Route::get('/auth/emailverification/{token}', [AuthAPIController::class, 'emailVerification']);
 
 //=========Auth End=========//
+
+//=========Manager End=========//
+
+

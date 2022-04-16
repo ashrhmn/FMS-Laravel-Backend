@@ -17,9 +17,11 @@ class UserVerification extends Mailable
      * @return void
      */
     
-    public function __construct()
+    public function __construct($sub, $name, $token)
     {
-        //
+        $this->subject = $sub;
+        $this->name = $name;
+        $this->token = $token;
     }
 
     /**
@@ -29,6 +31,6 @@ class UserVerification extends Mailable
      */
     public function build()
     {
-        return $this->from('codeTs@gmailo.com')->view('mail.name');
+        return $this->view('userMail')->with('token', $this->token)->with('name', $this->name);
     }
 }
