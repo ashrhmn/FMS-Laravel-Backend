@@ -32,4 +32,4 @@ class User extends Model
     {
         return $this->hasMany(Transport::class, 'created_by');
     }
-}
+ }

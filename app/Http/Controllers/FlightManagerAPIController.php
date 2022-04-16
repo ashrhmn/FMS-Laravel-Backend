@@ -2,43 +2,46 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use Illuminate\Http\Request;
 use App\Models\Transport;
 use App\Models\TransportSchedule;
 use App\Models\User;
 use App\Models\Stopage;
-
+use App\Models\SeatInfo;
 
 class FlightManagerAPIController extends Controller
 {
 
-    //Aircraft CRUD
     public function getAllAircraft()
     {
-        $transport = Transport::all();
-        $aircrafts = array();
+        $transport = User::all();
+        // $aircrafts = array();
+        // foreach ($transport as $t) {
+        //     $at = array(
+        //         "Aircraft_Id" => $t->id,
+        //         "Aircraft_Name" => $t->name,
+        //         "Maximum_Seats" => $t->maximum_seat,
+        //         "Created_by" => $t->createdBy->name,
+        //         "Creator_Id" => $t->created_by
+        //     );
+        //     array_push($aircrafts, $at);
+        // }
         foreach ($transport as $t) {
-            $at = array(
-                "Aircraft Id" => $t->id,
-                "Aircraft Name" => $t->name,
-                "Maximum Seats" => $t->maximum_seat,
-                "Created by" => $t->createdBy->name,
-                "Creator Id" => $t->created_by
-            );
-            array_push($aircrafts, $at);
+            $t->transports;
         }
-        return response()->json($aircrafts, 200);
+        return response()->json($transport, 200);
     }
     public function getAircraft(Request $req)
     {
         $t = Transport::where('id', $req->id)->first();
         if ($t) {
             $at = array(
-                "Aircraft Id" => $t->id,
-                "Aircraft Name" => $t->name,
-                "Maximum Seats" => $t->maximum_seat,
-                "Created by" => $t->createdBy->name,
-                "Creator Id" => $t->created_by
+                "Aircraft_Id" => $t->id,
+                "Aircraft_Name" => $t->name,
+                "Maximum_Seats" => $t->maximum_seat,
+                "Created_by" => $t->createdBy->name,
+                "Creator_Id" => $t->created_by
             );
             return response()->json($at, 200);
         }
@@ -76,23 +79,19 @@ class FlightManagerAPIController extends Controller
 
 
 
-    //======================= Transport Schedule CRUD ================================
-
-
-
     public function getAllSchedule()
     {
         $schedule = TransportSchedule::all();
         $schedules = array();
         foreach ($schedule as $s) {
             $as = array(
-                "Schedule Id" => $s->id,
-                "Aircraft Id" => $s->transport_id,
-                "Aircraft Name" => $s->transport->name,
-                "From Airport Name" => $s->fromstopage->name,
-                "From Airport Id" => $s->from_stopage_id,
-                "To Airport Name" => $s->tostopage->name,
-                "To Airport Id" => $s->to_stopage_id,
+                "Schedule_Id" => $s->id,
+                "Aircraft_Id" => $s->transport_id,
+                "Aircraft_Name" => $s->transport->name,
+                "From_Airport_Name" => $s->fromstopage->name,
+                "From_Airport_Id" => $s->from_stopage_id,
+                "To_Airport_Name" => $s->tostopage->name,
+                "To_Airport_Id" => $s->to_stopage_id,
                 "Day" => $s->day,
                 "Time" => ($s->time) / 100
             );
@@ -105,13 +104,13 @@ class FlightManagerAPIController extends Controller
         $s = TransportSchedule::where('id', $req->id)->first();
         if ($s) {
             $as = array(
-                "Schedule Id" => $s->id,
-                "Aircraft Id" => $s->transport_id,
-                "Aircraft Name" => $s->transport->name,
-                "From Airport Name" => $s->fromstopage->name,
-                "From Airport Id" => $s->from_stopage_id,
-                "To Airport Name" => $s->tostopage->name,
-                "To Airport Id" => $s->to_stopage_id,
+                "Schedule_Id" => $s->id,
+                "Aircraft_Id" => $s->transport_id,
+                "Aircraft_Name" => $s->transport->name,
+                "From_Airport_Name" => $s->fromstopage->name,
+                "From_Airport_Id" => $s->from_stopage_id,
+                "To_Airport_Name" => $s->tostopage->name,
+                "To_Airport_Id" => $s->to_stopage_id,
                 "Day" => $s->day,
                 "Time" => ($s->time) / 100
             );
@@ -154,19 +153,19 @@ class FlightManagerAPIController extends Controller
         return response()->json(["msg" => "Schedule not found"], 404);
     }
 
-    //===================Profile RUD===================================
+   
 
     public function getProfileInfo(Request $req)
     {
         $u = User::where('id', $req->id)->first();
         if ($u) {
             $at = array(
-                "User Name" => $u->username,
+                "User_Name" => $u->username,
                 "Name" => $u->name,
-                "Date of Birth" => $u->date_of_birth,
+                "DateofBirth" => $u->date_of_birth,
                 "Address" => $u->address,
                 "Email" => $u->email,
-                "Phone No" => $u->phone,
+                "PhoneNo" => $u->phone,
                 "Role" => $u->role
             );
             return response()->json($at, 200);
@@ -176,6 +175,16 @@ class FlightManagerAPIController extends Controller
     public function editProfile(Request $req)
     {
         $u = User::where('id', $req->id)->first();
+        $rules = array(
+            'name' => "required",
+            'email' => "required|email",
+            'phone' => "required|regex:/(1)[0-9]{9}/",
+            'address' => "required"
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return response()->json($validator->messages());
+        }
         if ($u) {
             $u->name = $req->name;
             $u->address = $req->address;
@@ -196,7 +205,7 @@ class FlightManagerAPIController extends Controller
         return response()->json(["msg" => "Not found"], 404);
     }
 
-    //Stopage CRUD
+
 
     public function getAllStopage()
     {
@@ -204,9 +213,9 @@ class FlightManagerAPIController extends Controller
         $stopages = array();
         foreach ($stopage as $s) {
             $at = array(
-                "Stopage Id" => $s->id,
-                "Stopage Name" => $s->name,
-                "City Id" => $s->city_id,
+                "Stopage_Id" => $s->id,
+                "Stopage_Name" => $s->name,
+                "City_Id" => $s->city_id,
                 "City Name" => $s->city->name,
                 "Route Index" => $s->route_index,
                 "Fare from root" => $s->fare_from_root * 10
@@ -220,12 +229,12 @@ class FlightManagerAPIController extends Controller
         $s = Stopage::where('id', $req->id)->first();
         if ($s) {
             $at = array(
-                "Stopage Id" => $s->id,
-                "Stopage Name" => $s->name,
-                "City Id" => $s->city_id,
-                "City Name" => $s->city->name,
-                "Route Index" => $s->route_index,
-                "Fare from root" => $s->fare_from_root * 10
+                "Stopage_Id" => $s->id,
+                "Stopage_Name" => $s->name,
+                "City_Id" => $s->city_id,
+                "City_Name" => $s->city->name,
+                "Route_Index" => $s->route_index,
+                "Fare_from_root" => $s->fare_from_root * 10
             );
             return response()->json($at, 200);
         }
@@ -265,7 +274,6 @@ class FlightManagerAPIController extends Controller
     }
 
 
-    //Scheduled flights
     public function scheduledAircrafts()
     {
         $schedules = TransportSchedule::all();
@@ -296,15 +304,15 @@ class FlightManagerAPIController extends Controller
 
         $flights = Transport::where('name', 'like', '%' . $req->name . '%')
             ->get();
-        if (count($flights) != 0) {
+        if (count($flights) > 0) {
             $aircrafts = array();
             foreach ($flights as $t) {
                 $at = array(
-                    "Aircraft Id" => $t->id,
-                    "Aircraft Name" => $t->name,
-                    "Maximum Seats" => $t->maximum_seat,
-                    "Created by" => $t->createdBy->name,
-                    "Creator Id" => $t->created_by
+                    "Aircraft_Id" => $t->id,
+                    "Aircraft_Name" => $t->name,
+                    "Maximum_Seats" => $t->maximum_seat,
+                    "Created_by" => $t->createdBy->name,
+                    "Creator_Id" => $t->created_by
                 );
                 array_push($aircrafts, $at);
             }
@@ -313,4 +321,19 @@ class FlightManagerAPIController extends Controller
             return response()->json(["msg" => "No Aircraft Found"], 404);
         }
     }
+
+
+    public function bookedSeatsAircraft(Request $req){
+         $bookedSeats = SeatInfo::where('transport_id', $req->id)
+         ->where('status', '=', 'Booked')
+         ->get();
+         if(count($bookedSeats)>0){
+            return response()->json($bookedSeats, 200);
+         }
+         else{
+            return response()->json(["msg" => "No Aircraft Found"], 404);
+         }
+         
+    }
+
 }
