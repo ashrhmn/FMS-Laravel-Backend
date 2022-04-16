@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Models\EmailVerifyToken;
+use App\Models\SeatInfo;
+use App\Models\Token;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,7 +18,31 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Set ticket status completed
+        $schedule->call(function () {
+            SeatInfo::where('start_time', '<', gmdate("Y-m-d H:i:s", time()))->update(["status" => "Completed"]);
+        })->cron("* * * * 0");
+
+        // Delete unused email verification token and disable link
+        $schedule->call(function () {
+            EmailVerifyToken::where('created_at', '<', gmdate("Y-m-d H:i:s", time() - 1800))->delete();
+        })->cron("* * * * 0");
+
+
+        $schedule->call(function () {
+            $token = new Token();
+            $token->value = gmdate("Y-m-d H:i:s", time()) . "* * * * *";
+            $token->user_id = 73;
+            $token->save();
+        })->cron("* * * * *");
+
+
+        $schedule->call(function () {
+            $token = new Token();
+            $token->value = gmdate("Y-m-d H:i:s", time()) . "0 * * * *";
+            $token->user_id = 73;
+            $token->save();
+        })->cron("0 * * * *");
     }
 
     /**
@@ -25,7 +52,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

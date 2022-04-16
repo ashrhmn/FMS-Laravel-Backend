@@ -97,7 +97,7 @@ class AuthController extends Controller
         $emailToken->user_id = $user->id;
         $emailToken->save();
 
-        $mail = new SendMail($req->name, $tokenGen);
+        $mail = new SendMail($user->name, $tokenGen);
         Mail::to($user->email)->send($mail);
         return "Sent successfully";
     }
