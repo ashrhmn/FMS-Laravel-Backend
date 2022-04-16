@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ManagerAPIController;
 use App\Http\Controllers\AuthAPIController;
 use App\Http\Controllers\AdminAPIController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FlightManagerAPIController;
 use App\Http\Controllers\UserApiController;
@@ -60,7 +61,6 @@ Route::post('/admin/searchflightmanager', [AdminAPIController::class, 'searchfli
 
 
 
-//=========User Start========//
 
 //=========Auth Start=========//
 
@@ -76,6 +76,17 @@ Route::post('/auth/send-mail', [AuthController::class, 'sendMail']);
 
 //=========Auth End========//
 
+//=========AdminAsh Start========//
+
+Route::get('/admin-db/transports', [AdminDashboardController::class, 'getTransports']);
+Route::get('/admin-db/users', [AdminDashboardController::class, 'getUsers']);
+Route::get('/admin-db/cities', [AdminDashboardController::class, 'getCities']);
+
+Route::get('/admin-db/test', [AdminDashboardController::class, 'test']);
+
+//=========AdminAsh End========//
+
+//=========User Start========//
 
 Route::get('/users/', [UserApiController::class, 'getAll']);
 Route::get('/users/{id}', [UserApiController::class, 'getOne']);
