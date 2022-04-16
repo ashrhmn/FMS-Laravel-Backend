@@ -296,8 +296,17 @@ class ManagerAPIController extends Controller
         foreach($ticket->seatinfos as $st){
             //return $st->id;
             $seat = [
-                "seat_id" => $st->id,
+                "ticket_id" => $ticket->id,
                 "flight_name" => $st->transport->name,
+                "fromStopage" => $ticket->fromstopage->name,
+                "from_stopage_city"=> $ticket->fromstopage->city->name,
+                "from_stopage_country"=> $ticket->fromstopage->city->country,
+                "toStopage" => $ticket->tostopage->name,
+                "to_stopage_city"=> $ticket->tostopage->city->name,
+                "to_stopage_country"=> $ticket->tostopage->city->country,
+                "purchased by" => $ticket->user->name,
+
+                "seat_id" => $st->id,
                 "flight_time" => $st->start_time,
                 "seat_class" => $st->seat_class,
                 "age_class" => $st->age_class
@@ -306,18 +315,19 @@ class ManagerAPIController extends Controller
             array_push($seats, $seat);
 
         }
-        return response()->json([
-                                    "ticket_id" => $ticket->id,
-                                    "fromStopage" => $ticket->fromstopage->name,
-                                    "from_stopage_city"=> $ticket->fromstopage->city->name,
-                                    "from_stopage_country"=> $ticket->fromstopage->city->country,
-                                    "toStopage" => $ticket->tostopage->name,
-                                    "to_stopage_city"=> $ticket->tostopage->city->name,
-                                    "to_stopage_country"=> $ticket->tostopage->city->country,
-                                    "purchased by" => $ticket->user->name,
-                                    "seat_flight_details" => $seats
+        return $seats;
+        // return response()->json([
+        //                             "ticket_id" => $ticket->id,
+        //                             "fromStopage" => $ticket->fromstopage->name,
+        //                             "from_stopage_city"=> $ticket->fromstopage->city->name,
+        //                             "from_stopage_country"=> $ticket->fromstopage->city->country,
+        //                             "toStopage" => $ticket->tostopage->name,
+        //                             "to_stopage_city"=> $ticket->tostopage->city->name,
+        //                             "to_stopage_country"=> $ticket->tostopage->city->country,
+        //                             "purchased by" => $ticket->user->name,
+        //                             "seat_flight_details" => $seats
                                     
-                                ]);
+        //                         ]);
 
     }
 
@@ -406,9 +416,10 @@ class ManagerAPIController extends Controller
     public function deleteflight(Request $req){
 
         $flight = Transport::where('id', '=', $req->fid)->first();
-        $schedules= TransportSchedule::where('transport_id','=',$req->fid)->get();
+        $schedule= TransportSchedule::where('id','=',$req->id)->first();
 
         $booked = SeatInfo::where('transport_id', '=', $req->fid)
+            ->where('start_time', $schedule->start_time)
             ->where('status', 'Booked')
             ->get();
         
@@ -688,7 +699,7 @@ class ManagerAPIController extends Controller
 
     public function flightSearch(Request $req){
         
-        $stopage = Stopage::all();
+        //$stopage = Stopage::all();
         if($req->fsid != null && $req->tsid == null && $req->date != ""){
             $fromstopage = Stopage::where('id', $req->fsid)->first();
             $transShed = TransportSchedule::where('from_stopage_id', '=', $fromstopage->id)
