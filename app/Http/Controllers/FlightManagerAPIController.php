@@ -15,22 +15,19 @@ class FlightManagerAPIController extends Controller
 
     public function getAllAircraft()
     {
-        $transport = User::all();
-        // $aircrafts = array();
-        // foreach ($transport as $t) {
-        //     $at = array(
-        //         "Aircraft_Id" => $t->id,
-        //         "Aircraft_Name" => $t->name,
-        //         "Maximum_Seats" => $t->maximum_seat,
-        //         "Created_by" => $t->createdBy->name,
-        //         "Creator_Id" => $t->created_by
-        //     );
-        //     array_push($aircrafts, $at);
-        // }
+        $transport = Transport::all();
+        $aircrafts = array();
         foreach ($transport as $t) {
-            $t->transports;
+            $at = array(
+                "Aircraft_Id" => $t->id,
+                "Aircraft_Name" => $t->name,
+                "Maximum_Seats" => $t->maximum_seat,
+                "Created_by" => $t->createdBy->name,
+                "Creator_Id" => $t->created_by
+            );
+            array_push($aircrafts, $at);
         }
-        return response()->json($transport, 200);
+        return response()->json($aircrafts, 200);
     }
     public function getAircraft(Request $req)
     {

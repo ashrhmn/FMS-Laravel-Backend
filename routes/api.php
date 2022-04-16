@@ -120,6 +120,7 @@ Route::get('/fm/bookedseats/{id}', [FlightManagerAPIController::class, 'bookedSe
 
 Route::post('/authfm/registration', [AuthFmController::class, 'registration']);
 Route::post('/authfm/login', [AuthFmController::class, 'login']);
+Route::get('/authfm/verify-email/{token}', [AuthFmController::class, 'verifyEmail']);
 
 //=========Flight-Manager End=========//
 
