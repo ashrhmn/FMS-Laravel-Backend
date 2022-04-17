@@ -82,7 +82,7 @@ class AuthController extends Controller
 
     public function resendVerificationMail(Request $req)
     {
-        $token = $req->header('token');
+        $token = $req->header('Authorization');
         $userToken = Token::where('value', $token)->first();
         if (!$userToken) return "Invalid token";
 
