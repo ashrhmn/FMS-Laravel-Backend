@@ -40,10 +40,4 @@ class AdminDashboardController extends Controller
         }
         return response()->json(["data" => $cities, "error" => null], 200);
     }
-
-    public function test()
-    {
-        $infos = EmailVerifyToken::where('created_at', '<', gmdate("Y-m-d H:i:s", time() - 1800))->delete();
-        return $infos;
-    }
 }
