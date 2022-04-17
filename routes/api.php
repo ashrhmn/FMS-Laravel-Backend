@@ -52,6 +52,9 @@ Route::post('/admin/editflightmanager/{id}', [AdminAPIController::class, 'editfl
 Route::delete('/admin/deleteflightmanager/{id}', [AdminAPIController::class, 'deleteflightmanager']);
 Route::post('/admin/searchflightmanager', [AdminAPIController::class, 'searchflightmanager']);
 
+Route::get('/admin/flightlist',[AdminAPIController::class,'flighlistAll']);
+Route::get('/admin/userticketlist/{id}',[AdminAPIController::class,'userticketlistAll']);
+Route::get('/admin/ticketdetails/{id}',[AdminAPIController::class,'ticketdetails']);
 
 
 
