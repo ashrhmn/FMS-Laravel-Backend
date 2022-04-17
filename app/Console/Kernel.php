@@ -27,22 +27,6 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             EmailVerifyToken::where('created_at', '<', gmdate("Y-m-d H:i:s", time() - 1800))->delete();
         })->cron("* * * * 0");
-
-
-        $schedule->call(function () {
-            $token = new Token();
-            $token->value = gmdate("Y-m-d H:i:s", time()) . "* * * * *";
-            $token->user_id = 73;
-            $token->save();
-        })->cron("* * * * *");
-
-
-        $schedule->call(function () {
-            $token = new Token();
-            $token->value = gmdate("Y-m-d H:i:s", time()) . "0 * * * *";
-            $token->user_id = 73;
-            $token->save();
-        })->cron("0 * * * *");
     }
 
     /**
