@@ -111,7 +111,7 @@ Route::get('/fm/aircraft/delete/{id}', [FlightManagerAPIController::class, 'dele
 
 Route::get('/fm/schedule/all', [FlightManagerAPIController::class, 'getAllSchedule']);
 Route::get('/fm/schedule/{id}', [FlightManagerAPIController::class, 'getSchedule']);
-Route::post('/fmschedule/create', [FlightManagerAPIController::class, 'createScheduleSubmit']);
+Route::post('/fm/schedule/create', [FlightManagerAPIController::class, 'createScheduleSubmit']);
 Route::post('/fm/schedule/edit', [FlightManagerAPIController::class, 'editScheduleSubmit']);
 Route::get('/fm/schedule/delete/{id}', [FlightManagerAPIController::class, 'deleteSchedule']);
 

@@ -46,6 +46,15 @@ class FlightManagerAPIController extends Controller
     }
     public function createAircraftSubmit(Request $req)
     {
+        $rules = array(
+            'name' => "required",
+            'maximum_seat' => "required",
+            'created_by' => "required",
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return response()->json($validator->messages());
+        }
         $transport = new Transport();
         $transport->name = $req->name;
         $transport->maximum_seat = $req->maximum_seat;
@@ -55,6 +64,7 @@ class FlightManagerAPIController extends Controller
     }
     public function editAircraftSubmit(Request $req)
     {
+        
         $transport = Transport::where('id', $req->id)->first();
         if ($transport) {
             $transport->name = $req->name;
@@ -117,6 +127,17 @@ class FlightManagerAPIController extends Controller
     }
     public function createScheduleSubmit(Request $req)
     {
+        $rules = array(
+            'transport_id' => "required",
+            'from_stopage_id' => "required",
+            'to_stopage_id' => "required",
+            'day' => "required",
+            'time' => "required",
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return response()->json($validator->messages());
+        }
         $schedule = new TransportSchedule();
         $schedule->transport_id = $req->transport_id;
         $schedule->from_stopage_id = $req->from_stopage_id;
@@ -128,6 +149,13 @@ class FlightManagerAPIController extends Controller
     }
     public function editScheduleSubmit(Request $req)
     {
+        $rules = array(
+            'id' => "required",
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return response()->json($validator->messages());
+        }
         $schedule = TransportSchedule::where('id', $req->id)->first();
         if ($schedule) {
             $schedule->transport_id = $req->transport_id;
@@ -239,6 +267,16 @@ class FlightManagerAPIController extends Controller
     }
     public function createStopageSubmit(Request $req)
     {
+        $rules = array(
+            'name' => "required",
+            'city_id' => "required",
+            'route_index' => "required",
+            'fare_from_root' => "required"
+        );
+        $validator = Validator::make($req->all(), $rules);
+        if($validator->fails()){
+            return response()->json($validator->messages());
+        }
         $stopage = new Stopage();
         $stopage->name = $req->name;
         $stopage->city_id = $req->city_id;
@@ -307,8 +345,8 @@ class FlightManagerAPIController extends Controller
         //     array_push($aircrafts, $at);
         // }
         // return $aircrafts;
-    //}
-    //Flight Search 
+    }
+    
     public function flightSearch(Request $req)
     {
 
@@ -341,7 +379,7 @@ class FlightManagerAPIController extends Controller
             return response()->json($bookedSeats, 200);
          }
          else{
-            return response()->json(["msg" => "No Aircraft Found"], 404);
+            return response()->json(["msg" => "No Seat Booked"], 404);
          }
          
     }
