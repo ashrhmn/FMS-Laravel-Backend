@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 
 class AdminDashboardController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth.admin');
+    }
     public function getTransports()
     {
         $transports = Transport::all();
@@ -35,11 +39,5 @@ class AdminDashboardController extends Controller
             $city->stopages;
         }
         return response()->json(["data" => $cities, "error" => null], 200);
-    }
-
-    public function test()
-    {
-        $infos = EmailVerifyToken::where('created_at', '<', gmdate("Y-m-d H:i:s", time() - 1800))->delete();
-        return $infos;
     }
 }
