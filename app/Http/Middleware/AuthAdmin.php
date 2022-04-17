@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Token;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,11 @@ class AuthAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        $token = $request->header('Authorization');
+        $userToken = Token::where('value', $token)->first();
+        if ($userToken && $userToken->user->role == 'Admin') {
+            return $next($request);
+        }
+        return response()->json(["msg" => "Unauthorized"], 401);
     }
 }

@@ -105,7 +105,7 @@ class AuthController extends Controller
 
     public function currentUser(Request $req)
     {
-        $token = $req->header('token');
+        $token = $req->header('Authorization');
         $userToken = Token::where('value', $token)->first();
         if (!$userToken) return response()->json(["data" => null, "error" => "Invalid Token"], 404);
         return response()->json(["data" => $userToken->user, "error" => null], 200);
