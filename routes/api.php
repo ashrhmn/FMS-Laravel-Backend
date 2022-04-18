@@ -11,6 +11,7 @@ use App\Http\Controllers\FlightManagerAPIController;
 use App\Http\Controllers\UserApiController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\AuthFmController;
+use App\Http\Controllers\AuthAdminContoller;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,10 +54,14 @@ Route::post('/admin/addflightmanager', [AdminAPIController::class, 'addflightman
 Route::post('/admin/editflightmanager/{id}', [AdminAPIController::class, 'editflightmanager']);
 Route::delete('/admin/deleteflightmanager/{id}', [AdminAPIController::class, 'deleteflightmanager']);
 Route::post('/admin/searchflightmanager', [AdminAPIController::class, 'searchflightmanager']);
-
+//fightTicket
 Route::get('/admin/flightlist',[AdminAPIController::class,'flighlistAll']);
 Route::get('/admin/userticketlist/{id}',[AdminAPIController::class,'userticketlistAll']);
 Route::get('/admin/ticketdetails/{id}',[AdminAPIController::class,'ticketdetails']);
+//Auth  Admin
+Route::post('/adminauth/registration', [AuthAdminContoller::class, 'registration']);
+Route::post('/adminauth/login', [AuthAdminContoller::class, 'login']);
+Route::get('/adminauth/emailverification/{token}', [AuthAdminContoller::class, 'emailVerification']);
 
 
 
